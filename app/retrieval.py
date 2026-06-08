@@ -12,16 +12,21 @@ collection = client.get_collection(
 )
 
 
-def retrieve(question: str, n_results: int = 5):
+def retrieve(question: str, n_results: int = 5, subject: str = None):
     model = get_embedding_model()
 
     embedding = model.encode(
         question
     ).tolist()
 
+    where_clause = None
+    if subject and subject.lower() != "general":
+        where_clause = {"subject": subject}
+
     results = collection.query(
         query_embeddings=[embedding],
-        n_results=n_results
+        n_results=n_results,
+        where=where_clause
     )
 
     return results

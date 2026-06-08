@@ -33,9 +33,9 @@ export default function ChatMainPage() {
   };
 
   return (
-    <div className="flex flex-col flex-1 h-full bg-[#0A0A0B] relative select-none">
+    <div className="flex flex-col flex-1 h-full bg-[--bg-base] relative select-none">
       {/* Top Header */}
-      <header className="flex items-center justify-between px-8 py-4 border-b border-[--bg-border] bg-[#0A0A0B] z-10">
+      <header className="flex items-center justify-between px-8 py-4 border-b border-[--bg-border] bg-[--bg-base] z-10">
         <SubjectSelector />
         <span className="font-mono text-[10px] text-[--text-tertiary] uppercase tracking-widest">
           [System Ready]
@@ -63,7 +63,7 @@ export default function ChatMainPage() {
           <span className="font-mono text-[9px] text-[--text-tertiary] uppercase tracking-wider block">
             [Suggested Inquiries]
           </span>
-          <div className="grid grid-cols-1 gap-2.5">
+          <div className="grid grid-cols-1 gap-2.5 stagger">
             {suggestedQuestions.map((q, i) => (
               <button
                 key={i}

@@ -38,7 +38,7 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   return (
     <form 
       onSubmit={handleSubmit} 
-      className="border-t border-[--bg-border] bg-[#0A0A0B] relative flex items-center px-6 py-2"
+      className="sticky bottom-0 border-t border-[--bg-border] bg-[--bg-base] relative flex items-center px-6 py-2 z-10"
     >
       <textarea
         ref={textareaRef}

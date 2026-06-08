@@ -17,7 +17,7 @@ def generate_answer(
     prompt = f"""
 You are the official assistant for Domasi College of Education.
 
-Answer ONLY using the supplied context.
+Answer ONLY using the supplied context. Cite the documents you used to answer (e.g. [Document 1 - filename.pdf]) when referencing facts.
 
 If the answer cannot be found in the context, say:
 

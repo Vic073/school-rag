@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { Send, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -36,32 +36,35 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-3 items-end p-4 border-t border-white/10 bg-[#07070b]/80 backdrop-blur-md">
-      <div className="flex-1 relative">
-        <textarea
-          ref={textareaRef}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask a question against school documents..."
-          rows={1}
-          disabled={disabled}
-          className="w-full pl-4 pr-12 py-3.5 rounded-2xl glass-input text-sm text-white placeholder-gray-500 focus:outline-none resize-none min-h-[50px] max-h-[200px]"
-        />
-        {disabled && (
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
-            <Loader2 size={18} className="animate-spin" />
-          </div>
+    <form 
+      onSubmit={handleSubmit} 
+      className="border-t border-[--bg-border] bg-[#0A0A0B] relative flex items-center px-6 py-2"
+    >
+      <textarea
+        ref={textareaRef}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="Ask anything about this subject..."
+        rows={1}
+        disabled={disabled}
+        className="flex-1 bg-transparent resize-none outline-none font-body text-[15px] font-light text-[--text-primary] placeholder:text-[--text-tertiary] py-4 pr-12 min-h-[56px] max-h-[200px]"
+      />
+
+      <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center">
+        {disabled ? (
+          <Loader2 size={16} className="animate-spin text-[--text-tertiary]" />
+        ) : (
+          <button
+            type="submit"
+            disabled={!text.trim() || disabled}
+            className="w-10 h-10 flex items-center justify-center text-[--text-secondary] hover:text-[--accent] transition-colors text-lg font-mono disabled:opacity-20 disabled:hover:text-[--text-secondary]"
+            title="Send query"
+          >
+            →
+          </button>
         )}
       </div>
-
-      <button
-        type="submit"
-        disabled={!text.trim() || disabled}
-        className="h-[50px] w-[50px] rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white flex items-center justify-center transition shadow-lg shadow-indigo-500/10 hover:scale-[1.03] active:scale-[0.97] disabled:opacity-40 disabled:scale-100 disabled:shadow-none"
-      >
-        <Send size={18} />
-      </button>
     </form>
   );
 }

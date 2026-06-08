@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Upload, FileText, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
 import { useAuth } from "./Providers";
 
@@ -54,7 +54,7 @@ export default function DocumentUpload() {
       const res = await api.uploadDocument(file, subject);
       setResult({
         status: "success",
-        message: `Successfully ingested "${res.filename}" into ${subject} (${res.chunks_created} chunks generated)`,
+        message: `Ingested "${res.filename}" into ${subject} (${res.chunks_created} chunks generated)`,
       });
       setFile(null);
       await refreshSubjects();
@@ -69,31 +69,35 @@ export default function DocumentUpload() {
   };
 
   return (
-    <div className="glass-panel p-6 rounded-2xl border border-white/5 space-y-6">
-      <div className="space-y-1">
-        <h3 className="text-lg font-bold text-white">Ingest New Syllabus Document</h3>
-        <p className="text-xs text-gray-400">
-          Upload class materials, notes, or handbooks to add them directly to the RAG database context.
-        </p>
+    <div className="space-y-8">
+      <div className="border-t border-[--bg-border] pt-6">
+        <span className="font-mono text-[10px] text-[--text-tertiary] uppercase tracking-widest block mb-2">
+          [01] Ingestion
+        </span>
+        <h3 className="font-display text-2xl font-normal text-white">
+          Add <em className="italic">course materials</em>
+        </h3>
       </div>
 
-      <form onSubmit={handleUpload} className="space-y-4">
-        {/* Subject Selection */}
-        <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-gray-300">Target Subject / Namespace</label>
+      <form onSubmit={handleUpload} className="space-y-6">
+        {/* Subject selection input */}
+        <div className="border-b border-[--bg-border] pb-3 focus-within:border-[--text-secondary] transition-colors">
+          <label className="font-mono text-[10px] text-[--text-tertiary] uppercase tracking-widest block mb-2">
+            Target Subject / Course
+          </label>
           <select
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white focus:outline-none focus:border-indigo-500"
+            className="w-full bg-transparent outline-none font-body text-base text-[--text-primary] cursor-pointer"
           >
-            <option className="bg-[#050508] text-white" value="General">General</option>
-            <option className="bg-[#050508] text-white" value="Physics">Physics</option>
-            <option className="bg-[#050508] text-white" value="Chemistry">Chemistry</option>
-            <option className="bg-[#050508] text-white" value="Biology">Biology</option>
-            <option className="bg-[#050508] text-white" value="Mathematics">Mathematics</option>
-            <option className="bg-[#050508] text-white" value="Computer Science">Computer Science</option>
-            <option className="bg-[#050508] text-white" value="Academic Calendar">Academic Calendar</option>
-            <option className="bg-[#050508] text-white" value="Handbook">Handbook</option>
+            <option className="bg-[#0A0A0B] text-[#F2F0EC]" value="General">General</option>
+            <option className="bg-[#0A0A0B] text-[#F2F0EC]" value="Physics">Physics</option>
+            <option className="bg-[#0A0A0B] text-[#F2F0EC]" value="Chemistry">Chemistry</option>
+            <option className="bg-[#0A0A0B] text-[#F2F0EC]" value="Biology">Biology</option>
+            <option className="bg-[#0A0A0B] text-[#F2F0EC]" value="Mathematics">Mathematics</option>
+            <option className="bg-[#0A0A0B] text-[#F2F0EC]" value="Computer Science">Computer Science</option>
+            <option className="bg-[#0A0A0B] text-[#F2F0EC]" value="Academic Calendar">Academic Calendar</option>
+            <option className="bg-[#0A0A0B] text-[#F2F0EC]" value="Handbook">Handbook</option>
           </select>
         </div>
 
@@ -104,12 +108,12 @@ export default function DocumentUpload() {
           onDragLeave={handleDrag}
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
-          className={`border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center gap-3 cursor-pointer transition ${
+          className={`border border-dashed rounded-none p-12 text-center cursor-pointer transition-colors duration-300 group ${
             dragActive
-              ? "border-indigo-500 bg-indigo-500/5"
+              ? "border-[--accent] bg-[--accent-subtle]"
               : file
-              ? "border-emerald-500/40 bg-emerald-500/5 hover:bg-emerald-500/10"
-              : "border-white/10 hover:border-white/25 hover:bg-white/[0.01]"
+              ? "border-[--accent] bg-[--accent-subtle]"
+              : "border-[--bg-border] hover:border-[--accent-border] hover:bg-[--accent-subtle]"
           }`}
         >
           <input
@@ -120,26 +124,30 @@ export default function DocumentUpload() {
             className="hidden"
           />
 
+          <span className="font-mono text-[10px] text-[--text-tertiary] uppercase tracking-widest block mb-3">
+            [Upload PDF]
+          </span>
+
           {file ? (
-            <>
-              <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/25">
-                <FileText size={24} />
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-semibold text-white">{file.name}</p>
-                <p className="text-xs text-gray-400">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-              </div>
-            </>
+            <div className="space-y-1">
+              <p className="font-body text-sm font-semibold text-white truncate max-w-xs mx-auto">{file.name}</p>
+              <p className="font-mono text-[10px] text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+            </div>
           ) : (
-            <>
-              <div className="p-3 bg-indigo-500/10 text-indigo-400 rounded-2xl border border-indigo-500/25">
-                <Upload size={24} />
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-semibold text-white">Click or drag PDF here</p>
-                <p className="text-xs text-gray-500">Only PDF formats under 10MB supported</p>
-              </div>
-            </>
+            <div className="space-y-1">
+              <p className="font-display text-xl text-[--text-primary]">
+                Drop your <em className="italic">documents</em> here.
+              </p>
+              <p className="font-body text-xs text-[--text-secondary]">
+                PDF documents · up to 20MB
+              </p>
+            </div>
+          )}
+
+          {!file && (
+            <span className="font-body text-xs text-[--accent] mt-4 block group-hover:underline">
+              or browse files →
+            </span>
           )}
         </div>
 
@@ -147,15 +155,15 @@ export default function DocumentUpload() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-sm transition-all duration-200 shadow-lg shadow-indigo-500/10 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2"
+            className="inline-flex items-center justify-center gap-2 font-body font-medium text-sm text-[--bg-base] bg-[--text-primary] hover:bg-[--accent] px-5 py-2.5 transition-colors duration-200 rounded-none w-full disabled:opacity-40"
           >
             {loading ? (
               <>
-                <Loader2 size={16} className="animate-spin" />
-                <span>Extracting & Chunking Document...</span>
+                <Loader2 size={14} className="animate-spin" />
+                <span>Processing...</span>
               </>
             ) : (
-              <span>Confirm & Ingest File</span>
+              <span>Ingest document →</span>
             )}
           </button>
         )}
@@ -164,14 +172,11 @@ export default function DocumentUpload() {
       {/* Result feedback */}
       {result && (
         <div
-          className={`flex items-start gap-2.5 p-4 rounded-xl border text-sm ${
-            result.status === "success"
-              ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-              : "bg-red-500/10 border-red-500/20 text-red-400"
+          className={`border-t pt-4 font-mono text-xs ${
+            result.status === "success" ? "text-[--success]" : "text-[--error]"
           }`}
         >
-          {result.status === "success" ? <CheckCircle size={18} className="shrink-0 mt-0.5" /> : <AlertCircle size={18} className="shrink-0 mt-0.5" />}
-          <span>{result.message}</span>
+          [{result.status === "success" ? "OK" : "ERR"}] {result.message}
         </div>
       )}
     </div>

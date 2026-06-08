@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import { useAuth } from "@/components/Providers";
-import { BookOpen, ShieldAlert, Zap, GraduationCap } from "lucide-react";
 
 export default function Home() {
   const { login, loading } = useAuth();
+  const [showModal, setShowModal] = useState(false);
   const [email, setEmail] = useState("student@schoolrag.edu");
   const [name, setName] = useState("Alex Johnson");
   const [role, setRole] = useState<"student" | "teacher" | "admin">("student");
@@ -36,74 +36,167 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#050508] relative overflow-hidden">
-      {/* Decorative background glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
+    <div className="min-h-screen flex flex-col bg-[--bg-base] text-[--text-primary] relative select-none">
 
-      {/* Main Container */}
-      <main className="flex-1 flex flex-col items-center justify-center p-6 md:p-12 z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Left: Marketing / Branding */}
-        <div className="lg:col-span-7 flex flex-col justify-center text-left space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 text-xs font-semibold w-max">
-            <GraduationCap size={14} /> Built for Domasi College of Education
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
-            Grounded Knowledge for <br />
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500 bg-clip-text text-transparent">
-              Smart Classrooms.
-            </span>
+      {/* ── Nav ──────────────────────────────────────────── */}
+      <nav className="fixed top-0 inset-x-0 z-50 h-14 border-b border-[--bg-border] bg-[--bg-base]/90 backdrop-blur-sm">
+        <div className="container h-full flex items-center justify-between">
+          <span className="font-[family-name:var(--font-body)] font-medium text-[--text-primary] tracking-tight">
+            School<span className="text-[--accent]">RAG</span>
+          </span>
+          <button
+            onClick={() => setShowModal(true)}
+            className="inline-flex items-center gap-2 font-[family-name:var(--font-body)] font-medium text-sm text-[--bg-base] bg-[--text-primary] hover:bg-[--accent] px-5 py-2 transition-colors duration-200"
+          >
+            Sign in →
+          </button>
+        </div>
+      </nav>
+
+      {/* ── Hero Section ─────────────────────────────────── */}
+      <section className="pt-32 pb-24 lg:pb-32 relative z-10">
+        <div className="container stagger">
+          <span className="font-[family-name:var(--font-mono)] text-[11px] text-[--text-secondary] tracking-widest uppercase block mb-6">
+            [01] School Intelligence Platform
+          </span>
+
+          <h1 className="font-[family-name:var(--font-display)] text-5xl md:text-6xl lg:text-[5rem] font-normal leading-[1.05] text-[--text-primary] max-w-3xl">
+            Your course notes,<br />
+            your past papers,<br />
+            <em className="italic text-[--accent]">finally answerable.</em>
           </h1>
-          <p className="text-gray-400 text-lg max-w-lg">
-            SchoolRAG is a self-hosted retrieval-augmented assistant that lets students and teachers get instant, cited answers directly from verified course syllabus documents and handbooks.
+
+          <p className="font-[family-name:var(--font-body)] text-base text-[--text-secondary] font-light max-w-lg leading-relaxed mt-8">
+            SchoolRAG is a self-hosted academic engine that indexes syllabi, handbooks, and documents. Students get answers with direct citations. Hallucinations eliminated.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 max-w-2xl">
-            <div className="glass-panel p-5 rounded-2xl space-y-2">
-              <div className="text-indigo-400 bg-indigo-500/10 p-2.5 rounded-xl w-max">
-                <BookOpen size={20} />
-              </div>
-              <h3 className="font-semibold text-white">Full Source Citations</h3>
-              <p className="text-xs text-gray-400">
-                Every answer references exact document sources and page numbers, enabling factual verification.
-              </p>
+          <button
+            onClick={() => setShowModal(true)}
+            className="inline-flex items-center gap-2 font-[family-name:var(--font-body)] font-medium text-sm text-[--bg-base] bg-[--text-primary] hover:bg-[--accent] px-6 py-3 transition-colors duration-200 mt-10"
+          >
+            Continue with Google →
+          </button>
+
+          {/* Stat row */}
+          <div className="grid grid-cols-3 gap-8 mt-16 max-w-lg">
+            <div className="border-t border-[--bg-border] pt-6">
+              <p className="font-[family-name:var(--font-mono)] text-3xl text-[--text-primary] mb-1">2,847</p>
+              <p className="font-[family-name:var(--font-body)] text-sm text-[--text-secondary]">Chunks indexed</p>
             </div>
-            <div className="glass-panel p-5 rounded-2xl space-y-2">
-              <div className="text-purple-400 bg-purple-500/10 p-2.5 rounded-xl w-max">
-                <Zap size={20} />
-              </div>
-              <h3 className="font-semibold text-white">Course Namespacing</h3>
-              <p className="text-xs text-gray-400">
-                Isolate queries to specific courses or handbooks. No out-of-domain hallucinations.
-              </p>
+            <div className="border-t border-[--bg-border] pt-6">
+              <p className="font-[family-name:var(--font-mono)] text-3xl text-[--text-primary] mb-1">4</p>
+              <p className="font-[family-name:var(--font-body)] text-sm text-[--text-secondary]">Subjects</p>
+            </div>
+            <div className="border-t border-[--bg-border] pt-6">
+              <p className="font-[family-name:var(--font-mono)] text-3xl text-[--text-primary] mb-1">0</p>
+              <p className="font-[family-name:var(--font-body)] text-sm text-[--text-secondary]">Hallucinations</p>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Right: Login Form */}
-        <div className="lg:col-span-5 flex items-center justify-center">
-          <div className="glass-panel w-full max-w-md p-8 rounded-3xl shadow-2xl relative">
-            <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent rounded-3xl pointer-events-none" />
+      {/* ── [02] How it works ────────────────────────────── */}
+      <section className="border-t border-[--bg-border] pt-20 pb-24 relative z-10">
+        <div className="container">
+          <span className="font-[family-name:var(--font-mono)] text-[11px] text-[--text-secondary] tracking-widest uppercase block mb-6">
+            [02] How it works
+          </span>
+          <h2 className="font-[family-name:var(--font-display)] text-3xl font-normal leading-snug text-[--text-primary] mb-12">
+            Three steps to <em className="italic text-[--accent]">cited answers.</em>
+          </h2>
 
-            <div className="relative space-y-6">
-              <div className="space-y-2 text-center lg:text-left">
-                <h2 className="text-2xl font-bold text-white">Welcome to SchoolRAG 📚</h2>
-                <p className="text-sm text-gray-400">
-                  Select your role to access the portal.
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {[
+              { num: "01", title: "Upload your PDFs", desc: "Teachers upload syllabi, past papers, and handbooks. Documents are chunked and embedded into a vector database." },
+              { num: "02", title: "Ask in plain English", desc: "Students type natural language questions. The system retrieves the most relevant passages from your school's own documents." },
+              { num: "03", title: "Get cited answers", desc: "Every answer includes page-level citations back to the source material. No hallucinations — only grounded responses." },
+            ].map((step) => (
+              <div key={step.num} className="space-y-4">
+                <span className="font-[family-name:var(--font-mono)] text-[11px] text-[--text-tertiary] tracking-widest">{step.num}</span>
+                <h3 className="font-[family-name:var(--font-display)] text-xl font-normal text-[--text-primary]">
+                  <em className="italic">{step.title}</em>
+                </h3>
+                <p className="font-[family-name:var(--font-body)] text-sm text-[--text-secondary] font-light leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── [03] For Schools ─────────────────────────────── */}
+      <section className="border-t border-[--bg-border] pt-20 pb-24 relative z-10">
+        <div className="container">
+          <span className="font-[family-name:var(--font-mono)] text-[11px] text-[--text-secondary] tracking-widest uppercase block mb-6">
+            [03] For Schools
+          </span>
+          <h2 className="font-[family-name:var(--font-display)] text-3xl font-normal leading-snug text-[--text-primary] mb-12">
+            Built for every <em className="italic text-[--accent]">stakeholder.</em>
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {[
+              { role: "Students", items: ["Ask questions in natural language", "Get page-cited answers instantly", "Study across all indexed subjects", "Flag unhelpful answers for review"] },
+              { role: "Teachers", items: ["Upload syllabi and past papers", "Review flagged student queries", "Monitor answer quality metrics", "Manage subject knowledge bases"] },
+              { role: "Admins", items: ["Full document lifecycle control", "User and role management", "System metrics and usage logs", "Delete and re-index documents"] },
+            ].map((col) => (
+              <div key={col.role} className="border-t border-[--bg-border] pt-6 space-y-4">
+                <h3 className="font-[family-name:var(--font-display)] text-xl font-normal text-[--text-primary]">
+                  <em className="italic">{col.role}</em>
+                </h3>
+                <ul className="space-y-2.5">
+                  {col.items.map((item, i) => (
+                    <li key={i} className="flex items-baseline gap-3">
+                      <span className="font-[family-name:var(--font-mono)] text-[10px] text-[--text-tertiary]">→</span>
+                      <span className="font-[family-name:var(--font-body)] text-sm text-[--text-secondary] font-light">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Footer ───────────────────────────────────────── */}
+      <footer className="border-t border-[--bg-border] py-8 relative z-10">
+        <div className="container">
+          <span className="font-[family-name:var(--font-mono)] text-[10px] text-[--text-tertiary] uppercase tracking-widest">
+            SchoolRAG · Domasi College of Education · © 2026
+          </span>
+        </div>
+      </footer>
+
+      {/* ── Sign-in Modal ────────────────────────────────── */}
+      {showModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowModal(false)}
+          />
+
+          {/* Modal panel */}
+          <div className="relative bg-[--bg-surface] border border-[--bg-border] w-full max-w-md mx-4 p-8 animate-in z-10">
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="space-y-2 border-b border-[--bg-border] pb-4">
+                <span className="font-[family-name:var(--font-mono)] text-[10px] text-[--text-tertiary] uppercase tracking-widest block">[Access Portal]</span>
+                <h2 className="font-[family-name:var(--font-display)] text-2xl font-normal text-[--text-primary]">
+                  Select a <em className="italic">session</em> role
+                </h2>
               </div>
 
-              {/* Role Toggle Selector */}
-              <div className="grid grid-cols-3 gap-2 bg-white/5 p-1 rounded-xl border border-white/5">
+              {/* Role select */}
+              <div className="flex gap-2">
                 {(["student", "teacher", "admin"] as const).map((r) => (
                   <button
                     key={r}
                     type="button"
                     onClick={() => handleRoleChange(r)}
-                    className={`py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
+                    className={`flex-1 py-1.5 border font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider transition ${
                       role === r
-                        ? "bg-indigo-500 text-white shadow-md shadow-indigo-500/20"
-                        : "text-gray-400 hover:text-white"
+                        ? "border-[--accent] text-[--accent] bg-[--accent-subtle]"
+                        : "border-[--bg-border] text-[--text-secondary] hover:text-[--text-primary]"
                     }`}
                   >
                     {r}
@@ -111,51 +204,63 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Developer Login Form */}
-              <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Login form */}
+              <form onSubmit={handleSubmit} className="space-y-6">
                 {error && (
-                  <div className="flex items-center gap-2 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
-                    <ShieldAlert size={16} />
-                    <span>{error}</span>
+                  <div className="font-[family-name:var(--font-mono)] text-xs text-[--error]">
+                    [ERR] {error}
                   </div>
                 )}
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-gray-300">Name</label>
+                <div className="border-b border-[--bg-border] pb-2 focus-within:border-[--text-secondary] transition-colors">
+                  <label className="font-[family-name:var(--font-mono)] text-[10px] text-[--text-tertiary] uppercase tracking-widest block mb-2">
+                    Name
+                  </label>
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl glass-input text-sm text-white"
-                    placeholder="Alex Johnson"
+                    className="w-full bg-transparent outline-none font-[family-name:var(--font-body)] text-sm text-[--text-primary]"
+                    placeholder="Enter full name"
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-gray-300">Email Address</label>
+                <div className="border-b border-[--bg-border] pb-2 focus-within:border-[--text-secondary] transition-colors">
+                  <label className="font-[family-name:var(--font-mono)] text-[10px] text-[--text-tertiary] uppercase tracking-widest block mb-2">
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl glass-input text-sm text-white"
-                    placeholder="student@schoolrag.edu"
+                    className="w-full bg-transparent outline-none font-[family-name:var(--font-body)] text-sm text-[--text-primary]"
+                    placeholder="Enter institutional email"
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-sm transition-all duration-200 animate-glow shadow-lg shadow-indigo-500/20 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
-                >
-                  {loading ? "Authenticating..." : `Access Portal as ${role.toUpperCase()}`}
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 font-[family-name:var(--font-body)] font-medium text-sm text-[--bg-base] bg-[--text-primary] hover:bg-[--accent] px-5 py-3 transition-colors duration-200 flex items-center justify-center gap-1.5"
+                  >
+                    {loading ? "Authenticating..." : `Enter as ${role.toUpperCase()} →`}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="font-[family-name:var(--font-mono)] text-[10px] text-[--text-tertiary] hover:text-[--text-primary] uppercase tracking-wider transition px-3 py-3 border border-[--bg-border] hover:border-[--text-secondary]"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </form>
             </div>
           </div>
         </div>
-      </main>
+      )}
     </div>
   );
 }

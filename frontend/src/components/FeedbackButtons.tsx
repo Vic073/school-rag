@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { ThumbsUp, ThumbsDown, MessageSquareCode } from "lucide-react";
 import { api } from "@/lib/api";
 
 interface FeedbackButtonsProps {
@@ -50,64 +49,62 @@ export default function FeedbackButtons({ messageId }: FeedbackButtonsProps) {
 
   if (submitted) {
     return (
-      <span className="text-xs text-gray-500 italic mt-2 block">
-        Thank you for your feedback!
+      <span className="font-mono text-[10px] text-[--text-tertiary] uppercase tracking-wider block mt-2">
+        Feedback logged
       </span>
     );
   }
 
   return (
     <div className="space-y-2 mt-2">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <button
           onClick={() => handleFeedback(1)}
           disabled={loading}
-          className={`p-1.5 rounded-lg border transition ${
+          className={`font-mono text-[10px] uppercase tracking-wider transition ${
             rating === 1
-              ? "bg-green-500/10 border-green-500/30 text-green-400"
-              : "border-transparent text-gray-500 hover:text-gray-300 hover:bg-white/5"
+              ? "text-[--accent]"
+              : "text-[--text-tertiary] hover:text-[--text-secondary]"
           }`}
-          title="Thumbs Up"
         >
-          <ThumbsUp size={14} />
+          [Helpful]
         </button>
         <button
           onClick={() => handleFeedback(-1)}
           disabled={loading}
-          className={`p-1.5 rounded-lg border transition ${
+          className={`font-mono text-[10px] uppercase tracking-wider transition ${
             rating === -1
-              ? "bg-red-500/10 border-red-500/30 text-red-400"
-              : "border-transparent text-gray-500 hover:text-gray-300 hover:bg-white/5"
+              ? "text-[--error]"
+              : "text-[--text-tertiary] hover:text-[--text-secondary]"
           }`}
-          title="Thumbs Down"
         >
-          <ThumbsDown size={14} />
+          [Flag answer]
         </button>
       </div>
 
       {showCommentBox && (
-        <form onSubmit={handleCommentSubmit} className="space-y-2 max-w-sm mt-2">
+        <form onSubmit={handleCommentSubmit} className="space-y-2 max-w-sm mt-3 border-b border-[--bg-border] pb-2">
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className="w-full p-2.5 rounded-xl text-xs bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-            placeholder="Help us improve. What was wrong with this answer?"
+            className="w-full bg-transparent resize-none outline-none font-body text-xs text-[--text-primary] placeholder:text-[--text-tertiary]"
+            placeholder="Explain why this output is unhelpful..."
             rows={2}
           />
           <div className="flex gap-2 justify-end">
             <button
               type="button"
               onClick={() => setShowCommentBox(false)}
-              className="px-3 py-1 rounded-lg text-[10px] font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition"
+              className="font-mono text-[10px] uppercase tracking-wider text-[--text-tertiary] hover:text-[--text-primary] transition"
             >
-              Cancel
+              [Cancel]
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-3 py-1 rounded-lg text-[10px] font-semibold bg-indigo-500 text-white hover:bg-indigo-600 transition"
+              className="font-mono text-[10px] uppercase tracking-wider text-[--accent] hover:text-white transition"
             >
-              Submit
+              [Submit]
             </button>
           </div>
         </form>

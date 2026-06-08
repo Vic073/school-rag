@@ -1,89 +1,176 @@
 @import "tailwindcss";
 
+@theme {
+  --font-display: var(--font-display), Georgia, serif;
+  --font-body: var(--font-body), sans-serif;
+  --font-mono: var(--font-mono), monospace;
+}
+
+:root {
+  /* Backgrounds */
+  --bg-base:      #0A0A0B;   /* near-black, main canvas */
+  --bg-surface:   #111113;   /* cards, sidebar, panels */
+  --bg-elevated:  #18181B;   /* hover states, active items */
+  --bg-border:    #232327;   /* subtle dividers */
+
+  /* Text */
+  --text-primary:   #F2F0EC;  /* main readable text — warm white */
+  --text-secondary: #8A8A93;  /* metadata, labels, timestamps */
+  --text-tertiary:  #55555F;  /* placeholders, disabled */
+
+  /* Accent — single warm amber */
+  --accent:         #D4A853;  /* primary CTA, highlights, cursor */
+  --accent-subtle:  #D4A85318; /* tinted backgrounds */
+  --accent-border:  #D4A85340; /* accent-tinted borders */
+
+  /* Semantic */
+  --success:  #4ADE80;
+  --warning:  #FBBF24;
+  --error:    #F87171;
+
+  /* Mono label */
+  --label-bg:     #1C1C20;
+  --label-text:   #8A8A93;
+  --label-border: #2A2A30;
+}
+
 @layer base {
   body {
-    background-color: #050508;
-    color: #f4f4f7;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+  }
+
+  /* Grain overlay — subtle tactile depth */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.022;
+  }
+
+  /* Selection — amber accent */
+  ::selection {
+    background: var(--accent);
+    color: var(--bg-base);
   }
 }
 
-/* Custom Utilities */
+/* ── Layout ─────────────────────────────────────── */
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media (min-width: 1024px) {
+  .container { padding: 0 5rem; }
+}
+
+/* ── Custom UI Utilities ────────────────────────── */
+
 .glass-panel {
-  background: rgba(17, 17, 24, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-border);
 }
 
 .glass-input {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  border-bottom: 1px solid var(--bg-border);
+  transition: border-color 0.2s ease;
 }
 
 .glass-input:focus {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(99, 102, 241, 0.5); /* indigo-500 */
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+  border-bottom-color: var(--text-secondary);
   outline: none;
 }
 
-/* Custom Scrollbars */
+/* ── Custom Scrollbars ──────────────────────────── */
+
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 9999px;
+  background: var(--bg-border);
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--text-tertiary);
 }
 
-/* Animations */
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(99, 102, 241, 0.5), 0 0 10px rgba(168, 85, 247, 0.3);
-  }
+/* ── Animations ─────────────────────────────────── */
+
+/* 1. Page enter — staggered fade-up */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0);    }
 }
 
-.animate-glow {
-  animation: pulseGlow 3s infinite;
+.animate-in {
+  animation: fadeUp 0.4s ease forwards;
 }
 
-.glow-btn {
+/* Stagger children */
+.stagger > *:nth-child(1) { animation-delay: 0ms;   }
+.stagger > *:nth-child(2) { animation-delay: 80ms;  }
+.stagger > *:nth-child(3) { animation-delay: 100ms; }
+.stagger > *:nth-child(4) { animation-delay: 160ms; }
+.stagger > *:nth-child(5) { animation-delay: 200ms; }
+.stagger > *:nth-child(6) { animation-delay: 240ms; }
+.stagger > *:nth-child(7) { animation-delay: 280ms; }
+.stagger > *:nth-child(8) { animation-delay: 320ms; }
+
+.stagger > * {
+  opacity: 0;
+  animation: fadeUp 0.4s ease forwards;
+}
+
+/* 2. Chat message appear */
+@keyframes messageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.message-enter {
+  animation: messageIn 0.25s ease forwards;
+}
+
+/* 3. Streaming text cursor */
+.streaming-cursor::after {
+  content: '▊';
+  font-size: 0.85em;
+  color: var(--accent);
+  animation: blink 0.7s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Editorial line pull-quote format for assistant messages */
+.assistant-line {
   position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
+  padding-left: 1.25rem;
 }
 
-.glow-btn::before {
+.assistant-line::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
-  transition: 0.5s;
-}
-
-.glow-btn:hover::before {
-  left: 100%;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background-color: var(--accent);
 }

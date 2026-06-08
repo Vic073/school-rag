@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/Providers";
 import DocumentUpload from "@/components/DocumentUpload";
 import { api, Feedback, Document } from "@/lib/api";
-import { LayoutDashboard, FileText, ArrowLeft, RefreshCw, AlertTriangle, FileSpreadsheet, MessagesSquare } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 export default function AdminDashboardPage() {
   const { user } = useAuth();
@@ -49,134 +49,114 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-[#050508] text-white">
+      <div className="flex-grow flex items-center justify-center bg-[#0A0A0B] text-white">
         <div className="flex flex-col items-center gap-4">
-          <RefreshCw className="animate-spin text-indigo-400" size={24} />
-          <span className="text-sm text-gray-400">Loading metrics...</span>
+          <RefreshCw className="animate-spin text-[--text-secondary]" size={16} />
+          <span className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Loading admin ledger</span>
         </div>
       </div>
     );
   }
 
-  // Calculate metrics
   const totalChunks = documents.reduce((sum, doc) => sum + doc.chunk_count, 0);
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#050508] overflow-y-auto">
+    <div className="flex-1 flex flex-col h-full bg-[#0A0A0B] overflow-y-auto">
       {/* Top Header */}
-      <header className="flex items-center justify-between px-8 py-5 border-b border-white/5 bg-[#07070b]/60 backdrop-blur-md sticky top-0 z-20">
-        <div className="flex items-center gap-3">
+      <header className="flex items-center justify-between px-8 py-5 border-b border-[--bg-border] bg-[#0A0A0B] sticky top-0 z-20">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => router.push("/chat")}
-            className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition"
+            className="font-mono text-[10px] text-[--text-tertiary] hover:text-[--text-primary] uppercase"
           >
-            <ArrowLeft size={16} />
+            [Exit Dashboard]
           </button>
-          <div className="flex items-center gap-2">
-            <LayoutDashboard size={20} className="text-indigo-400" />
-            <h1 className="text-xl font-bold text-white">Teacher Dashboard</h1>
-          </div>
+          <span className="font-mono text-[11px] text-[--text-secondary] uppercase tracking-wider">
+            Teacher Panel
+          </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => router.push("/admin/documents")}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-sm font-semibold transition"
+            className="font-mono text-[10px] text-[--text-primary] border border-[--bg-border] hover:border-[--text-secondary] px-3 py-1.5 transition uppercase tracking-wider"
           >
-            <FileSpreadsheet size={15} />
-            <span>Manage Documents</span>
+            Manage Documents →
           </button>
 
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition"
+            className="font-mono text-[10px] text-[--text-tertiary] hover:text-[--text-primary] transition uppercase tracking-wider"
           >
-            <RefreshCw size={14} className={refreshing ? "animate-spin" : ""} />
+            [Refresh]
           </button>
         </div>
       </header>
 
-      {/* Content Area */}
-      <div className="p-8 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* Grid Content */}
+      <div className="p-8 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12">
         
-        {/* Left Hand: Stats + Feedback */}
-        <div className="lg:col-span-7 space-y-8">
+        {/* Left marketing columns */}
+        <div className="lg:col-span-7 space-y-12">
           
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="glass-panel p-5 rounded-2xl border border-white/5 flex items-center justify-between">
-              <div className="space-y-1">
-                <span className="text-xs text-gray-400">Total Documents</span>
-                <p className="text-2xl font-bold text-white">{documents.length}</p>
-              </div>
-              <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/25">
-                <FileText size={18} />
-              </div>
-            </div>
+          {/* Section: Stats */}
+          <div className="space-y-4">
+            <span className="font-mono text-[10px] text-[--text-tertiary] uppercase tracking-widest block">
+              [01] Overview
+            </span>
+            <h2 className="font-display text-3xl font-normal text-white">
+              System <em className="italic">metrics</em> log
+            </h2>
 
-            <div className="glass-panel p-5 rounded-2xl border border-white/5 flex items-center justify-between">
+            <div className="grid grid-cols-3 gap-8 pt-8 border-t border-[--bg-border]">
               <div className="space-y-1">
-                <span className="text-xs text-gray-400">Vector Embeddings</span>
-                <p className="text-2xl font-bold text-white">{totalChunks}</p>
+                <p className="font-mono text-3xl text-[--text-primary]">{documents.length}</p>
+                <p className="font-body text-xs text-[--text-secondary] uppercase tracking-wider">Indexed files</p>
               </div>
-              <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/25">
-                <FileText size={18} />
-              </div>
-            </div>
-
-            <div className="glass-panel p-5 rounded-2xl border border-white/5 flex items-center justify-between">
               <div className="space-y-1">
-                <span className="text-xs text-gray-400">Total Flagged</span>
-                <p className="text-2xl font-bold text-white">{feedbackList.length}</p>
+                <p className="font-mono text-3xl text-[--text-primary]">{totalChunks}</p>
+                <p className="font-body text-xs text-[--text-secondary] uppercase tracking-wider">Total chunks</p>
               </div>
-              <div className="p-3 rounded-xl bg-red-500/10 text-red-400 border border-red-500/25">
-                <AlertTriangle size={18} />
+              <div className="space-y-1">
+                <p className="font-mono text-3xl text-[--text-primary]">{feedbackList.length}</p>
+                <p className="font-body text-xs text-[--text-secondary] uppercase tracking-wider">Flagged outputs</p>
               </div>
             </div>
           </div>
 
-          {/* Low Rated Feedback Section */}
-          <div className="glass-panel rounded-2xl border border-white/5 overflow-hidden">
-            <div className="p-6 border-b border-white/5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <AlertTriangle size={16} className="text-red-400" />
-                <h3 className="font-bold text-white">Negative User Feedback</h3>
-              </div>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-red-500/10 border border-red-500/25 text-red-400 font-semibold">
-                Requires Review
+          {/* Section: User feedback */}
+          <div className="space-y-6">
+            <div className="border-t border-[--bg-border] pt-6 flex justify-between items-baseline">
+              <span className="font-mono text-[10px] text-[--text-tertiary] uppercase tracking-widest block">
+                [02] Quality loop
+              </span>
+              <span className="font-mono text-[9px] text-[--error] uppercase tracking-wider">
+                Flagged answers
               </span>
             </div>
 
             {feedbackList.length === 0 ? (
-              <div className="p-12 text-center text-sm text-gray-500 flex flex-col items-center gap-2">
-                <MessagesSquare size={32} className="text-gray-600" />
-                <p>No low-rated answers flagged by students.</p>
+              <div className="p-8 border border-[--bg-border] text-center font-mono text-xs text-[--text-tertiary] italic">
+                Zero quality flags reported by students.
               </div>
             ) : (
-              <div className="divide-y divide-white/5">
+              <div className="space-y-4">
                 {feedbackList.map((fb) => (
-                  <div key={fb.id} className="p-6 space-y-3">
-                    <div className="flex items-center justify-between gap-4">
-                      <span className="text-xs text-gray-400 font-medium">{fb.user_email}</span>
-                      <span className="text-[10px] text-gray-500">
-                        {new Date(fb.created_at).toLocaleDateString()}
-                      </span>
-                    </div>
-                    
-                    <div className="space-y-1.5 p-3 rounded-xl bg-white/[0.01] border border-white/5">
-                      <span className="text-[10px] text-gray-500 uppercase font-semibold">Answer Output:</span>
-                      <p className="text-xs text-gray-300 line-clamp-3 italic">
-                        "{fb.message_content}"
-                      </p>
+                  <div key={fb.id} className="border border-[--bg-border] p-5 space-y-3 relative">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-[--text-secondary]">
+                      <span>{fb.user_email}</span>
+                      <span>{new Date(fb.created_at).toLocaleDateString()}</span>
                     </div>
 
+                    <p className="font-body text-xs text-[--text-tertiary] italic pl-3 border-l border-[--bg-border] line-clamp-3">
+                      "{fb.message_content}"
+                    </p>
+
                     {fb.comment && (
-                      <div className="space-y-1.5 p-3 rounded-xl bg-red-500/[0.02] border border-red-500/10">
-                        <span className="text-[10px] text-red-400 uppercase font-semibold">Student Reason:</span>
-                        <p className="text-xs text-red-200/90 font-medium">
-                          {fb.comment}
-                        </p>
+                      <div className="font-mono text-xs text-[--text-primary] pt-2 border-t border-[--bg-border]/40 flex gap-2">
+                        <span className="text-[--accent] shrink-0">Reason:</span>
+                        <span>{fb.comment}</span>
                       </div>
                     )}
                   </div>
@@ -186,7 +166,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Right Hand: File Upload Form */}
+        {/* Right side uploader */}
         <div className="lg:col-span-5">
           <DocumentUpload />
         </div>

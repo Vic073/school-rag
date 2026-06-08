@@ -9,21 +9,21 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-[#050508] text-white">
+      <div className="flex h-screen w-screen items-center justify-center bg-[--bg-base] text-[--text-primary]">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
-          <span className="text-sm font-medium text-gray-400">Loading SchoolRAG...</span>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[--accent] border-t-transparent" />
+          <span className="font-mono text-[11px] uppercase tracking-wider text-[--text-secondary]">Loading SchoolRAG...</span>
         </div>
       </div>
     );
   }
 
   if (!user) {
-    return null; // Will be redirected to "/" by Provider redirect guard
+    return null;
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#050508]">
+    <div className="flex h-screen w-screen overflow-hidden bg-[--bg-base]">
       {/* Sidebar */}
       <ConversationSidebar />
 

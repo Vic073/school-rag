@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/Providers";
 import { api, Document } from "@/lib/api";
-import { ArrowLeft, Trash2, FileText, Calendar, Database, RefreshCw, Eye } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 export default function DocumentManagementPage() {
   const { user } = useAuth();
@@ -69,42 +69,41 @@ export default function DocumentManagementPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-[#050508] text-white">
+      <div className="flex-1 flex items-center justify-center bg-[#0A0A0B] text-white">
         <div className="flex flex-col items-center gap-4">
-          <RefreshCw className="animate-spin text-indigo-400" size={24} />
-          <span className="text-sm text-gray-400">Loading document log...</span>
+          <RefreshCw className="animate-spin text-[--text-secondary]" size={16} />
+          <span className="font-mono text-[11px] uppercase tracking-wider text-gray-500">Loading document log</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#050508] overflow-y-auto">
+    <div className="flex-1 flex flex-col h-full bg-[#0A0A0B] overflow-y-auto">
       {/* Top Header */}
-      <header className="flex items-center justify-between px-8 py-5 border-b border-white/5 bg-[#07070b]/60 backdrop-blur-md sticky top-0 z-20">
-        <div className="flex items-center gap-3">
+      <header className="flex items-center justify-between px-8 py-5 border-b border-[--bg-border] bg-[#0A0A0B] sticky top-0 z-20">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => router.push("/admin")}
-            className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition"
+            className="font-mono text-[10px] text-[--text-tertiary] hover:text-[--text-primary] uppercase"
           >
-            <ArrowLeft size={16} />
+            [Back]
           </button>
-          <div className="flex items-center gap-2">
-            <Database size={20} className="text-indigo-400" />
-            <h1 className="text-xl font-bold text-white">Knowledge Base Log</h1>
-          </div>
+          <span className="font-mono text-[11px] text-[--text-secondary] uppercase tracking-wider">
+            Knowledge Base log
+          </span>
         </div>
 
         {/* Filter Dropdown */}
         <div className="flex items-center gap-3">
-          <span className="text-xs text-gray-400 font-semibold">Subject Filter:</span>
+          <span className="font-mono text-[10px] text-[--text-tertiary] uppercase tracking-wider">Course Filter:</span>
           <select
             value={subjectFilter}
             onChange={(e) => setSubjectFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-white focus:outline-none focus:border-indigo-500"
+            className="px-3 py-1 bg-transparent border border-[--bg-border] font-mono text-[11px] text-[--text-primary] focus:outline-none focus:border-[--text-secondary] cursor-pointer"
           >
             {getSubjectsList().map((subj) => (
-              <option key={subj} className="bg-[#050508] text-white" value={subj}>
+              <option key={subj} className="bg-[#0A0A0B] text-[#F2F0EC]" value={subj}>
                 {subj}
               </option>
             ))}
@@ -113,69 +112,62 @@ export default function DocumentManagementPage() {
       </header>
 
       {/* Main Content */}
-      <div className="p-8 max-w-7xl mx-auto w-full">
-        <div className="glass-panel rounded-2xl border border-white/5 overflow-hidden">
+      <div className="p-8 max-w-6xl mx-auto w-full space-y-8">
+        <div className="space-y-4">
+          <span className="font-mono text-[10px] text-[--text-tertiary] uppercase tracking-widest block">
+            [01] Document log
+          </span>
+          <h2 className="font-display text-3xl font-normal text-white">
+            Ingested <em className="italic">publications</em> index
+          </h2>
+        </div>
+
+        <div className="border-t border-[--bg-border] pt-2">
           {filteredDocs.length === 0 ? (
-            <div className="p-12 text-center text-sm text-gray-500 flex flex-col items-center gap-2">
-              <FileText size={32} className="text-gray-600" />
-              <p>No documents match the active subject filter.</p>
+            <div className="p-12 text-center font-mono text-xs text-[--text-tertiary] italic">
+              No files recorded.
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-white/5 text-xs font-semibold text-gray-500 uppercase tracking-wider bg-white/[0.01]">
-                    <th className="px-6 py-4">Filename</th>
-                    <th className="px-6 py-4">Subject</th>
-                    <th className="px-6 py-4">Vector Chunks</th>
-                    <th className="px-6 py-4">Ingested Date</th>
-                    <th className="px-6 py-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5 text-sm">
-                  {filteredDocs.map((doc) => (
-                    <tr key={doc.id} className="hover:bg-white/[0.01] transition">
-                      <td className="px-6 py-4 flex items-center gap-3">
-                        <FileText size={16} className="text-indigo-400 shrink-0" />
-                        <span className="font-semibold text-white truncate max-w-xs md:max-w-md" title={doc.filename}>
-                          {doc.filename}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-[11px] px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 font-semibold uppercase">
-                          {doc.subject}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-gray-300 font-mono">
-                        {doc.chunk_count}
-                      </td>
-                      <td className="px-6 py-4 text-gray-400 text-xs font-medium">
-                        {new Date(doc.uploaded_at).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        {user?.role === "admin" ? (
-                          <button
-                            onClick={() => handleDelete(doc.id)}
-                            disabled={deleteLoading === doc.id}
-                            className="p-2.5 rounded-xl text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition disabled:opacity-50"
-                            title="Delete Document & Vectors"
-                          >
-                            {deleteLoading === doc.id ? (
-                              <RefreshCw size={14} className="animate-spin" />
-                            ) : (
-                              <Trash2 size={14} />
-                            )}
-                          </button>
+            <div className="space-y-1">
+              {filteredDocs.map((doc) => (
+                <div 
+                  key={doc.id} 
+                  className="border-b border-[--bg-border]/40 py-5 flex justify-between items-center hover:bg-[--bg-surface]/30 px-4 -mx-4 transition-colors group"
+                >
+                  <div className="space-y-1 min-w-0 pr-4">
+                    <p className="font-body text-sm text-[--text-primary] font-light truncate max-w-lg" title={doc.filename}>
+                      {doc.filename}
+                    </p>
+                    <div className="flex items-center gap-3 font-mono text-[10px] text-[--text-tertiary]">
+                      <span className="text-[--accent] uppercase">[{doc.subject}]</span>
+                      <span>·</span>
+                      <span>{doc.chunk_count} chunks</span>
+                      <span>·</span>
+                      <span>Uploaded {new Date(doc.uploaded_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0">
+                    {user?.role === "admin" ? (
+                      <button
+                        onClick={() => handleDelete(doc.id)}
+                        disabled={deleteLoading === doc.id}
+                        className="font-mono text-xs text-[--text-tertiary] hover:text-[--error] transition uppercase tracking-wider py-1"
+                      >
+                        {deleteLoading === doc.id ? (
+                          "[Deleting]"
                         ) : (
-                          <span className="text-xs text-gray-600 font-medium italic">
-                            Read Only
-                          </span>
+                          "Delete →"
                         )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </button>
+                    ) : (
+                      <span className="font-mono text-[10px] text-[--text-tertiary] uppercase tracking-wider italic">
+                        [Read-Only]
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>

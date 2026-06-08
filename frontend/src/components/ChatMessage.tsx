@@ -14,7 +14,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
 
   if (isUser) {
     return (
-      <div className="flex justify-end mb-10 animate-in">
+      <div className="flex justify-end mb-10 message-enter">
         <p className="font-body text-[15px] font-light text-[--text-primary] max-w-[75%] leading-relaxed whitespace-pre-wrap">
           {message.content}
         </p>
@@ -23,7 +23,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
   }
 
   return (
-    <div className="mb-12 animate-in">
+    <div className="mb-12 message-enter">
       <div className="pl-5 border-l-2 border-[--accent] space-y-4">
         <p className="font-body text-[15px] font-light text-[--text-primary] leading-[1.8] whitespace-pre-wrap">
           {message.content}

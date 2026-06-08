@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+chromadb
+sentence-transformers
+groq
+python-dotenv
+pydantic
+sqlalchemy
+psycopg2-binary
+python-jose[cryptography]
+python-multipart
+pdfplumber
+alembic

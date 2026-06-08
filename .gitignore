@@ -1,2 +1,30 @@
-.env
-__pycache__
+# Environment variables
+.env*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Node / Next.js (frontend)
+node_modules/
+.next/
+
+# Data and uploads
+data/uploads/
+*.sqlite3
+
+# ChromaDB persisted data
+db/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -21,20 +21,50 @@ export default function ConversationSidebar() {
     }
   };
 
+  // Group conversations: today vs earlier
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const todayConvs = conversations.filter((c) => new Date(c.created_at) >= today);
+  const earlierConvs = conversations.filter((c) => new Date(c.created_at) < today);
+
+  const renderConversation = (conv: typeof conversations[0], globalIndex: number) => {
+    const isActive = activeId === conv.id;
+    const indexStr = globalIndex + 1 < 10 ? `0${globalIndex + 1}` : `${globalIndex + 1}`;
+    return (
+      <button
+        key={conv.id}
+        onClick={() => router.push(`/chat/${conv.id}`)}
+        className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors duration-150 border-l-2 ${
+          isActive
+            ? "bg-[--bg-elevated] text-[--text-primary] border-[--accent]"
+            : "text-[--text-secondary] border-transparent hover:text-[--text-primary] hover:bg-[--bg-elevated]"
+        }`}
+      >
+        <span className="font-[family-name:var(--font-mono)] text-[11px] text-[--text-tertiary] shrink-0">
+          {indexStr}
+        </span>
+        <span className="font-[family-name:var(--font-body)] text-sm truncate flex-1 font-light">
+          {conv.title || "Untitled Session"}
+        </span>
+      </button>
+    );
+  };
+
   return (
-    <aside className="w-[260px] border-r border-[--bg-border] bg-[#0A0A0B] flex flex-col h-full z-10 shrink-0 select-none relative">
+    <aside className="w-[260px] border-r border-[--bg-border] bg-[--bg-surface] flex flex-col h-full z-10 shrink-0 select-none relative">
       {/* Brand Heading */}
       <div className="p-6 border-b border-[--bg-border] flex items-center justify-between">
-        <span 
-          onClick={() => router.push("/chat")} 
-          className="font-body font-semibold text-lg text-[--text-primary] tracking-tight cursor-pointer"
+        <span
+          onClick={() => router.push("/chat")}
+          className="font-[family-name:var(--font-body)] font-semibold text-lg text-[--text-primary] tracking-tight cursor-pointer"
         >
           School<span className="text-[--accent]">RAG</span>
         </span>
         {user && (user.role === "teacher" || user.role === "admin") && (
           <button
             onClick={() => router.push("/admin")}
-            className="font-mono text-[10px] text-[--text-secondary] border border-[--bg-border] hover:border-[--accent] px-2 py-0.5 transition"
+            className="font-[family-name:var(--font-mono)] text-[10px] text-[--text-secondary] border border-[--bg-border] hover:border-[--accent] px-2 py-0.5 transition"
           >
             ADMIN
           </button>
@@ -44,48 +74,47 @@ export default function ConversationSidebar() {
       {/* Group Title */}
       <div className="px-6 pt-6 pb-2">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[10px] text-[--text-tertiary] tracking-widest">[01]</span>
-          <span className="font-mono text-[10px] text-[--text-secondary] uppercase tracking-[0.15em]">Conversations</span>
+          <span className="font-[family-name:var(--font-mono)] text-[10px] text-[--text-tertiary] tracking-widest">[01]</span>
+          <span className="font-[family-name:var(--font-mono)] text-[10px] text-[--text-secondary] uppercase tracking-[0.15em]">Conversations</span>
         </div>
       </div>
 
       {/* Conversation Thread List */}
-      <div className="flex-1 overflow-y-auto px-2 space-y-0.5">
+      <div className="flex-1 overflow-y-auto px-2 space-y-0">
         {conversations.length === 0 ? (
-          <div className="px-4 py-6 text-xs text-[--text-tertiary] font-body italic">
+          <div className="px-4 py-6 text-xs text-[--text-tertiary] font-[family-name:var(--font-body)] italic">
             No active sessions.
           </div>
         ) : (
-          conversations.map((conv, index) => {
-            const isActive = activeId === conv.id;
-            const indexStr = index + 1 < 10 ? `0${index + 1}` : index + 1;
-            return (
-              <button
-                key={conv.id}
-                onClick={() => router.push(`/chat/${conv.id}`)}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors duration-150 rounded-none border-l-2 ${
-                  isActive
-                    ? "bg-[--bg-surface] text-[--text-primary] border-[--accent]"
-                    : "text-[--text-secondary] border-transparent hover:text-[--text-primary] hover:bg-[--bg-surface]/50"
-                }`}
-              >
-                <span className="font-mono text-[11px] text-[--text-tertiary] shrink-0">
-                  {indexStr}
-                </span>
-                <span className="font-body text-sm truncate flex-1 font-light">
-                  {conv.title || "Untitled Session"}
-                </span>
-              </button>
-            );
-          })
+          <>
+            {/* Today group */}
+            {todayConvs.length > 0 && (
+              <>
+                <p className="font-[family-name:var(--font-mono)] text-[11px] text-[--text-tertiary] uppercase tracking-widest px-4 pt-4 pb-2">
+                  Today
+                </p>
+                {todayConvs.map((conv, i) => renderConversation(conv, i))}
+              </>
+            )}
+
+            {/* Earlier group */}
+            {earlierConvs.length > 0 && (
+              <>
+                <p className="font-[family-name:var(--font-mono)] text-[11px] text-[--text-tertiary] uppercase tracking-widest px-4 pt-6 pb-2">
+                  Earlier
+                </p>
+                {earlierConvs.map((conv, i) => renderConversation(conv, todayConvs.length + i))}
+              </>
+            )}
+          </>
         )}
       </div>
 
       {/* New Session footer panel */}
-      <div className="border-t border-[--bg-border] p-4 bg-[#0A0A0B] space-y-4">
+      <div className="absolute bottom-0 inset-x-0 border-t border-[--bg-border] p-4 bg-[--bg-surface] space-y-4">
         <button
           onClick={handleNewChat}
-          className="w-full text-left font-body text-sm text-[--accent] hover:underline flex items-center gap-1.5 transition-all duration-150 py-1"
+          className="w-full text-left font-[family-name:var(--font-body)] text-sm text-[--accent] hover:underline flex items-center gap-1.5 transition-all duration-150 py-1"
         >
           <span>+</span> New session →
         </button>
@@ -94,13 +123,13 @@ export default function ConversationSidebar() {
           <div className="pt-3 border-t border-[--bg-border]/40 flex items-center justify-between">
             <div className="min-w-0">
               <div className="text-xs font-semibold text-[--text-primary] truncate">{user.name || user.email}</div>
-              <div className="font-mono text-[9px] text-[--text-secondary] uppercase tracking-wider mt-0.5">
+              <div className="font-[family-name:var(--font-mono)] text-[9px] text-[--text-secondary] uppercase tracking-wider mt-0.5">
                 {user.role}
               </div>
             </div>
             <button
               onClick={logout}
-              className="font-mono text-[10px] text-[--text-tertiary] hover:text-[--error] transition"
+              className="font-[family-name:var(--font-mono)] text-[10px] text-[--text-tertiary] hover:text-[--error] transition"
             >
               Sign out
             </button>
